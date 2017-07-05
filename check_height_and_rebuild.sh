@@ -85,7 +85,7 @@ function SyncState()
 	date +"%Y-%m-%d %H:%M:%S || ${green}Looks like rebuilding finished.${resetColor}"
 	if [[ -n "$SECRET" ]];
 	then
-		curl --connect-timeout 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":'"$SECRET"'}' http://"$SRV"/api/delegates/forging/enable ## If you want this script to reenable forging when done
+		curl --connect-timeout 10 -k -H "Content-Type: application/json" -X POST -d '{"secret":'"$SECRET"'}' http://"$SRV"/api/delegates/forging/enable ## If you want this script to reenable forging when done
 	fi
 }
 #---------------------------------------------------------------------------
@@ -224,7 +224,7 @@ local_height() {
 		else
 			if [[ -n "$SECRET" ]];
 			then
-				curl --connect-timeout 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":'"$SECRET"'}' http://"$SRV"/api/delegates/forging/enable ## Uncomment this line if you want this script to reenable forging when done
+				curl --connect-timeout 10 -k -H "Content-Type: application/json" -X POST -d '{"secret":'"$SECRET"'}' http://"$SRV"/api/delegates/forging/enable ## Uncomment this line if you want this script to reenable forging when done
 			fi
 		fi
 	fi
