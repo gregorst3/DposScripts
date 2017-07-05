@@ -56,7 +56,7 @@ function SyncState()
 	while [[ -z $result || $result != 'false' ]]
 	do
 		date +"%Y-%m-%d %H:%M:%S || Blockchain syncing"
-		result=$(curl --connect-timeout 3 -s "http://$SRV1$PRT/api/loader/status/sync" | jq '.syncing')
+		result=$(curl --connect-timeout 10 -s "http://$SRV1$PRT/api/loader/status/sync" | jq '.syncing')
 		sleep 2
 	done
 
@@ -68,7 +68,7 @@ function SyncState()
 while true;
 do
 	## Get forging status of server
-	FORGE=$(curl --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 -s "http://"$SRV1""$PRT"/api/delegates/forging/status?publicKey="$PBK| jq '.enabled')
+	FORGE=$(curl --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 -s "http://"$SRV1""$PRT"/api/delegates/forging/status?publicKey="$PBK| jq '.enabled')
 	if [[ "$FORGE" == "true" ]]; ## Only check log and try to switch forging if needed, if server is currently forging
 	then
 		if [[ "$FORGINGINLOG" == 0 ]]; ## Log when forging started on node
@@ -77,7 +77,7 @@ do
 			FORGINGINLOG=1
 		fi
 		## Get current server's height and consensus
-		SERVERLOCAL=$(curl --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 -s "http://"$SRV1""$PRT"/api/loader/status/sync")
+		SERVERLOCAL=$(curl --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 -s "http://"$SRV1""$PRT"/api/loader/status/sync")
 		HEIGHTLOCAL=$( echo "$SERVERLOCAL" | jq '.height')
 		CONSENSUSLOCAL=$( echo "$SERVERLOCAL" | jq '.consensus')
 		## Get recent log
@@ -96,7 +96,7 @@ do
 		LASTLINE=$( echo "$LOG" | grep 'starting recovery')
 		if [[ -n "$LASTLINE" ]];
 		then
-			delegates=$(curl --connect-timeout 3 -s "http://"$SRV1""$PRT"/api/delegates/getNextForgers" | jq '.delegates')
+			delegates=$(curl --connect-timeout 10 -s "http://"$SRV1""$PRT"/api/delegates/getNextForgers" | jq '.delegates')
 			date +"%Y-%m-%d %H:%M:%S || ${YELLOW}Node is recovering.  Looking for delegate forging soon matching $PBK${RESETCOLOR}"
 			if [[ $delegates == *"$PBK"* ]];
 			then
@@ -104,7 +104,7 @@ do
 				for SERVER in "${SERVERS[@]}"
 				do
 					## Get next server's height and consensus
-					SERVERINFO=$(curl --connect-timeout 3 -s -S "http://"$SERVER""$PRT"/api/loader/status/sync")
+					SERVERINFO=$(curl --connect-timeout 10 -s -S "http://"$SERVER""$PRT"/api/loader/status/sync")
 					HEIGHT=$( echo "$SERVERINFO" | jq '.height')
 					CONSENSUS=$( echo "$SERVERINFO" | jq '.consensus')
 
@@ -118,10 +118,10 @@ do
 					## if [ "$DIFF" -lt "3" ] && [ "$CONSENSUS" -gt "$CONSENSUSLOCAL" ]; ## Removed for now as I believe consensus read from API isn't updated every second to be fully accurate
 					if [ "$DIFF" -lt "3" ]; 
 					then
-						DISABLEFORGE=$(curl -s -S --connect-timeout 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
+						DISABLEFORGE=$(curl -s -S --connect-timeout 10 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
 						if [ "$DISABLEFORGE" = "true" ];
 						then
-							curl -s -S --connect-timeout 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
+							curl -s -S --connect-timeout 10 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
 							date +"%Y-%m-%d %H:%M:%S || ${CYAN}Successsfully switching to Server $SERVER with a consensus of $CONSENSUS as your node is recovering.${RESETCOLOR}"
 							break
 						else
@@ -146,12 +146,12 @@ do
 			fi
 			
 			## Disable forging on local server first.  If successful, loop through servers until we are able to enable forging on one
-			DISABLEFORGE=$(curl -s -S --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
+			DISABLEFORGE=$(curl -s -S --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
 			if [ "$DISABLEFORGE" = "true" ];
 			then
 				for SERVER in "${SERVERS[@]}"
 				do
-					ENABLEFORGE=$(curl -s -S --connect-timeout 1 --retry 2 --retry-delay 0 --retry-max-time 2 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable | jq '.success')
+					ENABLEFORGE=$(curl -s -S --connect-timeout 10 --retry 2 --retry-delay 0 --retry-max-time 2 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable | jq '.success')
 					if [ "$ENABLEFORGE" = "true" ];
 					then
 						date +"%Y-%m-%d %H:%M:%S || ${CYAN}Successsfully switching to Server $SERVER to try and forge.${RESETCOLOR}"
@@ -177,10 +177,10 @@ do
 				date +"%Y-%m-%d %H:%M:%S || ${YELLOW}Low consensus of $CONSENSUSLOCAL.  Looking for delegate forging soon matching $PBK${RESETCOLOR}"
 			fi
 		
-			DELEGATESNEXT=$(curl -s -S --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 "http://"$SRV1""$PRT"/api/delegates/getNextForgers?limit=2" | jq '.delegates')
+			DELEGATESNEXT=$(curl -s -S --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 "http://"$SRV1""$PRT"/api/delegates/getNextForgers?limit=2" | jq '.delegates')
 			if [[ $DELEGATESNEXT != *"$PBK"* ]];
 			then
-				DELEGATESSOON=$(curl -s -S --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 "http://"$SRV1""$PRT"/api/delegates/getNextForgers" | jq '.delegates')
+				DELEGATESSOON=$(curl -s -S --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 "http://"$SRV1""$PRT"/api/delegates/getNextForgers" | jq '.delegates')
 				if [[ $DELEGATESSOON == *"$PBK"* ]];
 				then
 					date +"%Y-%m-%d %H:%M:%S || ${RED}You are forging in next 100 seconds, but your consensus is too low or there was a fork. Looking to switch server before reload.${RESETCOLOR}"
@@ -201,10 +201,10 @@ do
 						## if [ "$DIFF" -lt "3" ] && [ "$CONSENSUS" -gt "$CONSENSUSLOCAL" ]; ## Removed for now as I believe consensus read from API isn't updated every second to be fully accurate
 						if [ "$DIFF" -lt "3" ]; 
 						then
-							DISABLEFORGE=$(curl -s -S --connect-timeout 1 --retry 3 --retry-delay 0 --retry-max-time 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
+							DISABLEFORGE=$(curl -s -S --connect-timeout 10 --retry 3 --retry-delay 0 --retry-max-time 3 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SRV1""$PRTS"/api/delegates/forging/disable | jq '.success')
 							if [ "$DISABLEFORGE" = "true" ];
 							then
-								curl -s -S --connect-timeout 2 --retry 2 --retry-delay 0 --retry-max-time 4 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
+								curl -s -S --connect-timeout 10 --retry 2 --retry-delay 0 --retry-max-time 4 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
 								date +"%Y-%m-%d %H:%M:%S || ${CYAN}Successsfully switching to Server $SERVER with a consensus of $CONSENSUS as your consensus is too low.  We will try a reload.${RESETCOLOR}"
 								ChangeDirectory
 								bash lisk.sh reload
