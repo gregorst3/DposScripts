@@ -50,7 +50,7 @@ To check the logs and what the script is going:
 This script looks at the last two lines of the log: ~/lisk-main/logs/lisk.log for the word 'Inadequate'.  If it sees that word then it tries to switch forging quickly to server 2.  If server two is not at a good height, it tries server 3 if available.  You can run this on all forging servers.
 
 #### How to test:
-If you enter `"Inadequate" >> ~/lisk-main/log/lisk.log` on the server, it should activate check_consensus.sh to switch forging nodes
+If you enter `echo "Inadequate" >> ~/lisk-main/logs/lisk.log` on the server, it should activate check_consensus.sh to switch forging nodes
 
 ## My Anti-fork script
 
