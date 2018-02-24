@@ -1,6 +1,6 @@
 {
 	"port":":8000",
-	"restart":"./shift_manager.bash reload",
+	"reload":"./shift_manager.bash reload",
 	"https_port":":2443",
 	"lisk_directory":"~/lisk-main",
 	"pbk":"YOUR PUBLIC KEY",
