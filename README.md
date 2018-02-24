@@ -1,4 +1,4 @@
-# universal Delegate Scripts  (BETA v0.9.5.1)
+# Universal Delegate Scripts  (BETA v0.9.5.1)
 
 ## Thank you
 Thank you to cc001, corsaro, liberspirita, wannabe_RoteBaron, hagie, isabella, stoner19, punkrock, Nerigal, doweig, and anyone I might have missed for their help and/or contributions.
