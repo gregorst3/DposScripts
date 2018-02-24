@@ -10,38 +10,7 @@ CONSENSUS_LOG_FILE="consensus.log"
 MANAGE_SH_FILE="manage.sh"
 MANAGE_LOG_FILE="manage.log"
 
-start_height() {
-	## Check for config file
-	CONFIG_FILE="mrv_config.json"
-	if [[ ! -e "$CONFIG_FILE" ]] ; then
-		wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/mrv_config.json"
-		PS3='Please select an editor to input config details: '
-		options=("nano" "vi")
-		select opt in "${options[@]}"
-		do
-		    case $opt in
-			"nano")
-			    nano mrv_config.json
-			    break
-			    ;;
-			"vi")
-			    vi mrv_config.json
-			    break
-			    ;;
-			*) echo invalid option;;
-		    esac
-		done
-	fi
-	if [[ ! -e "$LOG_FILE" ]] ; then
-		touch "$LOG_FILE"
-	fi
-	if [[ ! -e "$SH_FILE" ]] ; then
-		wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/check_height_and_rebuild.sh"
-	fi
-	
-	echo "Starting heightRebuild Script"
-	nohup bash $SH_FILE -S $SRV  > $LOG_FILE 2>&1&  ## SRV???
-}
+
 
 check_height_running() {
 	# Check if it is running
@@ -54,16 +23,7 @@ check_height_running() {
 	fi
 }
 
-upgrade_height() {
-	if [[ -e "$SH_FILE" ]] ;
-	then
-		rm "$SH_FILE"
-	fi
-	
-	wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/check_height_and_rebuild.sh"
-	echo "Starting heightRebuild Script"
-	nohup bash $SH_FILE -S $SRV  > $LOG_FILE 2>&1&
-}
+
 
 start_consensus() {
 	## Check for config file
@@ -152,13 +112,7 @@ status() {
 		echo "Consensus is not currently running"
 	fi
 	
-	# Check if heightRebuild is running
-	if pgrep -fl $SH_FILE > /dev/null
-	then
-		echo "HeightRebuild is running"
-	else
-		echo "HeightRebuild is not currently running"
-	fi
+	
 	
 	# Check if manage.sh is running
 	if pgrep -fl $MANAGE_SH_FILE > /dev/null
@@ -187,11 +141,9 @@ usage() {
   echo "Usage: $0 <start|stop|upgrade>"
   echo "start			-- starts consensus & height_rebuild scripts"
   echo "startc			-- starts consensus script"
-  echo "starth         		-- starts height_rebuild script"
   echo "startm         		-- starts manage script"
   echo "stop          		-- stops all scripts"
   echo "stopc          		-- stops consensus script"
-  echo "stoph			-- stops height_rebuild script"
   echo "stopm         		-- stops manage script"
   echo "status          	-- check if scripts are running"
   echo "logs          		-- display all logs (requires multitail)"
@@ -200,8 +152,7 @@ usage() {
 
 case $1 in 
 "start" )
-	check_height_running
-	start_height
+	
 	check_consensus_running
 	start_consensus
 ;;
@@ -209,10 +160,7 @@ case $1 in
 	check_consensus_running
 	start_consensus
 ;;
-"starth" )
-	check_height_running
-	start_height
-;;
+
 "startm" )
 	check_manage_running
 	start_manage
@@ -225,9 +173,7 @@ case $1 in
 "stopc" ) 
 	check_consensus_running
 ;;
-"stoph" ) 
-	check_height_running
-;;
+
 "stopm" ) 
 	check_manage_running
 ;;
@@ -238,10 +184,10 @@ case $1 in
 	logs
 ;;
 "upgrade" ) 
-	check_height_running
+
 	check_consensus_running
 	
-	upgrade_height
+	
 	upgrade_consensus
 ;;
 *)
