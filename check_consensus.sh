@@ -11,7 +11,8 @@ LDIRECTORY=$( echo "$CONFIGFILE" | jq -r '.lisk_directory')
 SRV1=$( echo "$CONFIGFILE" | jq -r '.srv1')
 PRT=$( echo "$CONFIGFILE" | jq -r '.port')
 PRTS=$( echo "$CONFIGFILE" | jq -r '.https_port')
-PBK=$( echo "$CONFIGFILE" | jq -r '.pbk')
+PBK=$(  "$CONFIGFILE" | jq -r '.reload')
+RELOAD=$( echo "$CONFIGFILE" | jq -r '.pbk')
 SERVERS=()
 ### Get servers array
 size=$( echo "$CONFIGFILE" | jq '.servers | length') 
@@ -207,7 +208,7 @@ do
 								curl -s -S --connect-timeout 10 --retry 2 --retry-delay 0 --retry-max-time 4 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
 								date +"%Y-%m-%d %H:%M:%S || ${CYAN}Successsfully switching to Server $SERVER with a consensus of $CONSENSUS as your consensus is too low.  We will try a reload.${RESETCOLOR}"
 								ChangeDirectory
-								bash lisk.sh reload
+								$RELOAD
 								sleep 15
 								SyncState
 								break
