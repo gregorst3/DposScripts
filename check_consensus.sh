@@ -208,7 +208,7 @@ do
 								curl -s -S --connect-timeout 10 --retry 2 --retry-delay 0 --retry-max-time 4 -k -H "Content-Type: application/json" -X POST -d '{"secret":"'"$SECRET"'"}' https://"$SERVER""$PRTS"/api/delegates/forging/enable
 								date +"%Y-%m-%d %H:%M:%S || ${CYAN}Successsfully switching to Server $SERVER with a consensus of $CONSENSUS as your consensus is too low.  We will try a reload.${RESETCOLOR}"
 								ChangeDirectory
-								$RELOAD
+								echo $RELOAD | bash
 								sleep 15
 								SyncState
 								break
