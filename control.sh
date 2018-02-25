@@ -29,7 +29,7 @@ start_consensus() {
 	## Check for config file
 	CONFIG_FILE="mrv_config.json"
 	if [[ ! -e "$CONFIG_FILE" ]] ; then
-		wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/mrv_config.json"
+		wget "https://github.com/gregorst3/DposScripts/raw/master/mrv_config.json"
 		PS3='Please select an editor to input config details: '
 		options=("nano" "vi")
 		select opt in "${options[@]}"
@@ -51,7 +51,7 @@ start_consensus() {
 		touch "$CONSENSUS_LOG_FILE"
 	fi
 	if [[ ! -e "$CONSENSUS_SH_FILE" ]] ; then
-		wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/check_consensus.sh"
+		wget "https://github.com/gregorst3/DposScripts/raw/master/check_consensus.sh"
 	fi
 	
 	echo "Starting consensus Script"
@@ -75,7 +75,7 @@ upgrade_consensus() {
 		rm "$CONSENSUS_SH_FILE"
 	fi
 	
-	wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/check_consensus.sh"
+	wget "https://github.com/gregorst3/DposScripts/raw/master/check_consensus.sh"
 	echo "Starting consensus Script"
 	nohup bash $CONSENSUS_SH_FILE -S $SRV  > $CONSENSUS_SH_FILE 2>&1&
 }
@@ -85,7 +85,7 @@ start_manage() {
 		touch "$MANAGE_LOG_FILE"
 	fi
 	if [[ ! -e "$MANAGE_SH_FILE" ]] ; then
-		wget "https://raw.githubusercontent.com/mrv777/LiskScripts/master/manage.sh"
+		wget "https://github.com/gregorst3/DposScripts/raw/master/manage.sh"
 	fi
 	
 	echo "Starting Management Script"
