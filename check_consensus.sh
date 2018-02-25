@@ -7,7 +7,7 @@ CONFIG_FILE="mrv_config.json"
 ##  Read config file
 CONFIGFILE=$(cat "$CONFIG_FILE")
 SECRET=$( echo "$CONFIGFILE" | jq -r '.secret')
-LOFILE=$( echo "$CONFIGFILE" | jq -r '.log')
+LOGFILE=$( echo "$CONFIGFILE" | jq -r '.log')
 LDIRECTORY=$( echo "$CONFIGFILE" | jq -r '.coin_directory')
 SRV1=$( echo "$CONFIGFILE" | jq -r '.srv1')
 PRT=$( echo "$CONFIGFILE" | jq -r '.port')
