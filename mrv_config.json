@@ -1,8 +1,9 @@
 {
 	"port":":8000",
 	"reload":"./shift_manager.bash reload",
+	"log":"shift.log",
 	"https_port":":2443",
-	"coin_directory":"~/shift",
+	"coin_directory":"/home/gregorst/shift",
 	"pbk":"YOUR PUBLIC KEY",
 	"secret":"YOUR SECRET",
 	"manage_servers": [
