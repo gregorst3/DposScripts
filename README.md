@@ -30,7 +30,7 @@ This is the wrapper script for check_height_and_rebuild.sh and check_consensus.s
 #### How to run:
 
 1. `sudo apt-get install jq`
-2. `wget https://raw.githubusercontent.com/mrv777/LiskScripts/master/control.sh`
+2. `https://github.com/gregorst3/DposScripts/raw/master/control.sh`
 3. Choose which scripts to run
   1. `bash control.sh start` - Both
   2. `bash control.sh startc` - Consensus script only
@@ -50,7 +50,7 @@ To check the logs and what the script is going:
 This script looks at the last two lines of the log: ~/lisk-main/logs/lisk.log for the word 'Inadequate'.  If it sees that word then it tries to switch forging quickly to server 2.  If server two is not at a good height, it tries server 3 if available.  You can run this on all forging servers.
 
 #### How to test:
-If you enter `"Inadequate" >> ~/lisk-main/log/lisk.log` on the server, it should activate check_consensus.sh to switch forging nodes
+If you enter `echo "Inadequate" >> ~/lisk-main/logs/lisk.log` on the server, it should activate check_consensus.sh to switch forging nodes
 
 ## My Anti-fork script
 
@@ -68,7 +68,7 @@ This script will check the block heights of all listed servers.  It will attempt
 #### How to run:
 
 1. `sudo apt-get install jq`
-2. `wget https://raw.githubusercontent.com/mrv777/LiskScripts/master/control.sh`
+2. `https://github.com/gregorst3/DposScripts/raw/master/control.sh`
 3. `bash control.sh startm` - Start management script
 
 To check the logs and what the script is going:
