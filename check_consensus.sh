@@ -7,6 +7,7 @@ CONFIG_FILE="mrv_config.json"
 ##  Read config file
 CONFIGFILE=$(cat "$CONFIG_FILE")
 SECRET=$( echo "$CONFIGFILE" | jq -r '.secret')
+LOFILE=$( echo "$CONFIGFILE" | jq -r '.log')
 LDIRECTORY=$( echo "$CONFIGFILE" | jq -r '.coin_directory')
 SRV1=$( echo "$CONFIGFILE" | jq -r '.srv1')
 PRT=$( echo "$CONFIGFILE" | jq -r '.port')
@@ -82,7 +83,7 @@ do
 		HEIGHTLOCAL=$( echo "$SERVERLOCAL" | jq '.height')
 		CONSENSUSLOCAL=$( echo "$SERVERLOCAL" | jq '.consensus')
 		## Get recent log
-		LOG=$(tail ~/lisk-main/logs/lisk.log -n 10)
+		LOG=$(tail "$LDIRECTORY"/logs/"$LOGFILE" -n 10)
 		
 		## Look for a forged block in logs
 		FORGEDBLOCKLOG=$( echo "$LOG" | grep 'Forged new block')
