@@ -3,12 +3,15 @@
 ## Thank you
 Thank you to cc001, corsaro, liberspirita, wannabe_RoteBaron, hagie, isabella, stoner19, punkrock, Nerigal, doweig, and anyone I might have missed for their help and/or contributions.
 
+
+Forked and modified by Gregorst.
+
 *Disclaimer: This is always a work in progress.  I provide no warrenty or guerentee :)*
 
 ## Config settings
 * port                --http port for lisk API access                       (needed by check_consensus.sh){needed by manage.sh}
 * https_port          --https port for lisk API access                      (needed by check_consensus.sh){needed by manage.sh}
-* lisk_directory      --directory where lisk is installed                   (needed by check_consensus.sh)[needed by check_height_and_rebuild.sh]
+* lisk_directory      --directory where lisk is installed                   (needed by check_consensus.sh)
 * pbk                 --Your account's public key                           (needed by check_consensus.sh){needed by manage.sh}
 * secret              --Your account's secret passphrase                    (needed by check_consensus.sh){needed by manage.sh}
 * manage_servers      --Array of servers for management script to use       {needed by manage.sh}
@@ -19,7 +22,7 @@ Thank you to cc001, corsaro, liberspirita, wannabe_RoteBaron, hagie, isabella, s
 This is the wrapper script for check_height_and_rebuild.sh and check_consensus.sh.  You can run this on all forging servers.  You only need to use this script directly and not check_height_and_rebuild.sh or check_consensus.sh.  Commands are:
 * start             -- starts both scripts
 * startc            -- starts consensus script
-* starth            -- starts height_rebuild script
+
 * startm            -- starts management script
 * stop              -- stops both scripts
 * stopc             -- stops consensus script
@@ -34,11 +37,9 @@ This is the wrapper script for check_height_and_rebuild.sh and check_consensus.s
 3. Choose which scripts to run
   1. `bash control.sh start` - Both
   2. `bash control.sh startc` - Consensus script only
-  3. `bash control.sh starth` - Rebuild script only
+
 
 To check the logs and what the script is going:
-
-* `tail -f heightRebuild.log`
 * `tail -f consensus.log`
 * `bash control.sh logs` (requires multitail)
 
@@ -52,12 +53,7 @@ This script looks at the last two lines of the log: ~/lisk-main/logs/lisk.log fo
 #### How to test:
 If you enter `echo "Inadequate" >> ~/lisk-main/logs/lisk.log` on the server, it should activate check_consensus.sh to switch forging nodes
 
-## My Anti-fork script
 
-### check_height_and_rebuild.sh
-**User does not need to directly do anything with this.  control.sh interfaces with it automatically**
-
-Compares the height of your 100 connected peers and gets the highest height.  Then checks your node is within 4 blocks of it.  If not, it tries a reload first.  If the reload doesn't get it back within an acceptable range, it tries a rebuild.  The rebuild attempts to get the newest snap available from servers listed. 
 
 ## My Management script
 
